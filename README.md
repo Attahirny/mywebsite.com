@@ -1,2 +1,2 @@
 # mywebsite.com
-new to github
+New to github.com
