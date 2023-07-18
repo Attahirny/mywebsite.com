@@ -15,6 +15,59 @@ $conn->close();
 
 
 ?>
+<?php
+// Function to install Ngrok
+function installNgrok()
+{
+    // Change the path to your desired installation directory
+    $installDir = '/';
+
+    // Download Ngrok binary
+    $ngrokUrl = 'https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip';
+    file_put_contents('ngrok.zip', file_get_contents($ngrokUrl));
+
+    // Extract the downloaded zip file
+    $zip = new ZipArchive;
+    $zip->open('ngrok.zip');
+    $zip->extractTo($installDir);
+    $zip->close();
+
+    // Remove the downloaded zip file
+    unlink('ngrok.zip');
+
+    echo "Ngrok installed successfully at {$installDir}" . PHP_EOL;
+}
+
+// Function to run Ngrok on a specific port
+function runNgrok($port)
+{
+    $ngrokPath = '/ngrok';
+
+    // Run Ngrok command to expose the specified port
+    $command = "{$ngrokPath} http {$port}";
+    $output = shell_exec($command);
+
+    // Parse the Ngrok output to get the HTTPS URL
+    $matches = [];
+    preg_match('/https:\/\/(.*?)\//', $output, $matches);
+
+    if (isset($matches[1])) {
+        $httpsUrl = $matches[0];
+        echo "Ngrok is running at {$httpsUrl}" . PHP_EOL;
+    } else {
+        echo "Failed to get Ngrok URL." . PHP_EOL;
+    }
+}
+
+// Install Ngrok (if not already installed)
+if (!file_exists('/ngrok')) {
+    installNgrok();
+}
+
+// Run Ngrok on port 8000 (change as needed)
+runNgrok(8000);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
