@@ -9,3 +9,10 @@ window.addEventListener('DOMContentLoaded', function() {
     const loading = document.getElementById('loading');
     loading.style.display = 'none';
 });
+const socket = io.connect('http://localhost:3000');
+
+socket.on('data', function(data) {
+
+	const print = document.getElementById('print');
+	print.innerText = data;
+});

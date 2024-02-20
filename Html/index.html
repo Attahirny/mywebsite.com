@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<?php
+// Include the database connection file
+include('connectdb.php');
+
+// Insert data into the table using prepared statements
+$sql = "INSERT INTO `entries` (`Name`, `Email`, `Password`) VALUES (?, ?, ?)";
+$stmt = $conn->prepare($sql);
+
+$name = 'Ahmadu';
+$email = 'a@b.com';
+$password = 'AHMAD123';
+$stmt->bind_param('sss', $name, $email, $password);
+$stmt->execute();
+$stmt->close();
+
+// Check if data insertion was successful
+if (!$stmt) {
+    echo "Data insertion failed: " . htmlspecialchars($conn->error);
+}
+
+// Retrieve data from the table
+$sql = "SELECT * FROM entries";
+$result = mysqli_query($conn, $sql);
+$myarray = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$conn->close();
+?>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Tutorials</title>
+    <style>
+        .btn-md {
+            background-color: grey;
+            width: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: skyblue;
+            color: rgb(150, 100, 20);
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+            color: rgb(150, 10, 20);
+        }
+
+        table {
+            border-collapse: collapse;
+        }
+
+        div {
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>User Profile Data</h1>
+
+    <table>
+        <tbody>
+        <tr>
+            <?php foreach (array_keys($myarray[0]) as $k): ?>
+                <th><?php echo htmlspecialchars($k); ?></th>
+            <?php endforeach; ?>
+        </tr>
+        <?php foreach ($myarray as $array): ?>
+            <tr>
+                <?php foreach ($array as $i): ?>
+                    <td><?php echo $i; ?></td>
+                <?php endforeach; ?>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
